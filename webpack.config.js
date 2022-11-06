@@ -8,7 +8,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = (env, argv) => {
   // Test webpack 5.x pass enviroment variables
-  console.log("argv.mode = " + argv.mode);
+  // console.log("argv.mode = " + argv.mode);
 
   // Pass variables in to pug files (https://www.npmjs.com/package/pug-html-loader)
   // - add 'options.data' in pug-html-loader to pass into pug
@@ -30,21 +30,9 @@ module.exports = (env, argv) => {
       filename: "./js/[name].js?[chunkhash]",
     },
     devServer: {
+      hot: true,
       compress: true,
       port: 3000,
-      // stats: {
-      //   assets: true,
-      //   cached: false,
-      //   chunkModules: false,
-      //   chunkOrigins: false,
-      //   chunks: false,
-      //   colors: true,
-      //   hash: false,
-      //   modules: false,
-      //   reasons: false,
-      //   versions: false,
-      //   warnings: false,
-      // },
     },
     module: {
       rules: [
@@ -137,7 +125,7 @@ module.exports = (env, argv) => {
       new CleanWebpackPlugin(),
       new CopyPlugin({
         patterns: [
-          { from: "css", to: "css" },
+          // { from: "css", to: "css" },
           { from: "images", to: "images" },
           { from: "assets", to: "assets" },
         ],
@@ -149,20 +137,6 @@ module.exports = (env, argv) => {
       new MiniCssExtractPlugin({
         filename: "css/[name].css",
       }),
-      // For single pug file
-      // new HtmlWebpackPlugin({
-      //   template: './pug/index.pug',
-      //   filename: 'index.html',
-      //   inject: true,
-      //   chunks: ['index'],
-      //   minify: {
-      //     sortAttributes: true,
-      //     collapseWhitespace: false, // 折疊空白字元就是壓縮Html
-      //     collapseBooleanAttributes: true, // 折疊布林值属性，例:readonly checked
-      //     removeComments: true, // 移除註釋
-      //     removeAttributeQuotes: true // 移除屬性的引號
-      //   }
-      // }),
     ],
   };
 

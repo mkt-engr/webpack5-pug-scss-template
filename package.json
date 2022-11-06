@@ -39,8 +39,6 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.10.4",
-    "bootstrap": "^5.2.2",
-    "jquery": "^3.6.1",
     "sass": "^1.56.0"
   }
 }
