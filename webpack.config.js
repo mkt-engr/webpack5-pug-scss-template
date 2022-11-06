@@ -1,49 +1,50 @@
-const path = require('path');
-const glob = require('glob');
-const webpack = require('webpack');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyPlugin = require('copy-webpack-plugin');
+const path = require("path");
+const glob = require("glob");
+const webpack = require("webpack");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = (env, argv) => {
   // Test webpack 5.x pass enviroment variables
-  console.log('argv.mode = ' + argv.mode);
+  console.log("argv.mode = " + argv.mode);
 
   // Pass variables in to pug files (https://www.npmjs.com/package/pug-html-loader)
   // - add 'options.data' in pug-html-loader to pass into pug
   // Pass variables into Sass/SCSS (https://www.npmjs.com/package/sass-loader#additionaldata)
   // - add 'options.additionalData' in sass-loader to pass variables
   const _gParams = {
-    FILE_PREFIX: (argv.mode === 'production') ? '/dist/' : '/',
-    IMG_PREFIX_URL: (argv.mode === 'production') ? 'https://soarlin.github.io/' : '/'
+    FILE_PREFIX: argv.mode === "production" ? "/dist/" : "/",
+    IMG_PREFIX_URL:
+      argv.mode === "production" ? "https://soarlin.github.io/" : "/",
   };
 
   var config = {
-    context: path.resolve(__dirname, 'src'),
+    context: path.resolve(__dirname, "src"),
     entry: {
-      index: './js/index.js',
+      index: "./js/index.js",
     },
     output: {
-      path: path.resolve(__dirname, 'dist'),
-      filename: './js/[name].js?[chunkhash]'
+      path: path.resolve(__dirname, "dist"),
+      filename: "./js/[name].js?[chunkhash]",
     },
     devServer: {
       compress: true,
       port: 3000,
-      stats: {
-        assets: true,
-        cached: false,
-        chunkModules: false,
-        chunkOrigins: false,
-        chunks: false,
-        colors: true,
-        hash: false,
-        modules: false,
-        reasons: false,
-        versions: false,
-        warnings: false
-      }
+      // stats: {
+      //   assets: true,
+      //   cached: false,
+      //   chunkModules: false,
+      //   chunkOrigins: false,
+      //   chunks: false,
+      //   colors: true,
+      //   hash: false,
+      //   modules: false,
+      //   reasons: false,
+      //   versions: false,
+      //   warnings: false,
+      // },
     },
     module: {
       rules: [
@@ -51,97 +52,102 @@ module.exports = (env, argv) => {
           test: /\.pug$/,
           use: [
             {
-              loader: 'html-loader',
+              loader: "html-loader",
               options: {
-                minimize: (argv.mode === 'production') ? true : false
-              }
+                minimize: argv.mode === "production" ? true : false,
+              },
             },
             {
-              loader: 'pug-html-loader',
+              loader: "pug-html-loader",
               options: {
-                data: _gParams
-              }
-            }
-          ]
+                data: _gParams,
+              },
+            },
+          ],
         },
         {
           test: /\.s[ac]ss$/i,
           use: [
             MiniCssExtractPlugin.loader,
-            'css-loader', // Translates CSS into CommonJS
+            "css-loader", // Translates CSS into CommonJS
             {
-              loader: 'sass-loader',
+              loader: "sass-loader",
               options: {
                 sourceMap: true,
-                additionalData: "$env: '" + argv.mode + "'; $imgPrefix: '" + _gParams.IMG_PREFIX_URL + "';"
-              }
-            }
-          ]
+                additionalData:
+                  "$env: '" +
+                  argv.mode +
+                  "'; $imgPrefix: '" +
+                  _gParams.IMG_PREFIX_URL +
+                  "';",
+              },
+            },
+          ],
         },
         {
           test: /\.css$/i,
           use: [
             MiniCssExtractPlugin.loader,
-            'css-loader' // Translates CSS into CommonJS
-          ]
+            "css-loader", // Translates CSS into CommonJS
+          ],
         },
         {
           test: /\.js$/,
           use: {
-            loader: 'babel-loader',
+            loader: "babel-loader",
             options: {
-              presets: ['@babel/preset-env']
-            }
-          }
+              presets: ["@babel/preset-env"],
+            },
+          },
         },
         {
           test: /\.(jpe?g|png|gif|svg)$/,
           use: [
             {
-              loader: 'url-loader',
+              loader: "url-loader",
               options: {
                 limit: 8192,
-                name: '[path][name].[ext]?[chunkhash]'
-              }
+                name: "[path][name].[ext]?[chunkhash]",
+              },
             },
             {
-              loader: 'image-webpack-loader',
+              loader: "image-webpack-loader",
               options: {
                 mozjpeg: {
                   progressive: true,
-                  quality: 65
+                  quality: 65,
                 },
                 optipng: {
-                  enabled: false
+                  enabled: false,
                 },
                 pngquant: {
-                  quality: [0.65, 0.90],
-                  speed: 4
+                  quality: [0.65, 0.9],
+                  speed: 4,
                 },
                 gifsicle: {
-                  interlaced: false
-                }
-              }
-            }
-          ]
-        }
-      ]
+                  interlaced: false,
+                },
+              },
+            },
+          ],
+        },
+      ],
     },
     plugins: [
       new CleanWebpackPlugin(),
       new CopyPlugin({
         patterns: [
-          { from: 'css', to: 'css' },
-          { from: 'images', to: 'images' },
-          { from: 'assets', to: 'assets' }
-        ]
+          { from: "css", to: "css" },
+          { from: "images", to: "images" },
+          { from: "assets", to: "assets" },
+        ],
       }),
       new webpack.ProvidePlugin({
-        $: 'jquery',
-        jQuery: 'jquery' //這邊以上是新增
+        $: "jquery",
+        jQuery: "jquery", //這邊以上是新增
       }),
       new MiniCssExtractPlugin({
-        filename: 'css/[name].css',
+        filename: "css/[name].css",
       }),
       // For single pug file
       // new HtmlWebpackPlugin({
@@ -157,26 +163,26 @@ module.exports = (env, argv) => {
       //     removeAttributeQuotes: true // 移除屬性的引號
       //   }
       // }),
-    ]
+    ],
   };
 
   // For mutiple pug files
-  glob.sync('./src/pug/*.pug').forEach((path) => {
-    const start = path.indexOf('/pug/') + 5;
+  glob.sync("./src/pug/*.pug").forEach((path) => {
+    const start = path.indexOf("/pug/") + 5;
     const end = path.length - 4;
     const name = path.slice(start, end);
     config.plugins.push(
       new HtmlWebpackPlugin({
-        template: './pug/' + name + '.pug',
-        filename: name + '.html',
+        template: "./pug/" + name + ".pug",
+        filename: name + ".html",
         inject: true,
-        chunks: ['index'],
+        chunks: ["index"],
         minify: {
           sortAttributes: true,
           collapseWhitespace: false,
           collapseBooleanAttributes: true,
-          removeComments: true
-        }
+          removeComments: true,
+        },
       })
     );
   });
